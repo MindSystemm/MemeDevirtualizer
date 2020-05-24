@@ -1,0 +1,8 @@
+C:\Users\nicol\source\repos\MemeDevirtualizer\MemeDevirtualizer\bin\Debug\MemeDevirtualizer.exe.config
+C:\Users\nicol\source\repos\MemeDevirtualizer\MemeDevirtualizer\bin\Debug\MemeDevirtualizer.exe
+C:\Users\nicol\source\repos\MemeDevirtualizer\MemeDevirtualizer\bin\Debug\MemeDevirtualizer.pdb
+C:\Users\nicol\source\repos\MemeDevirtualizer\MemeDevirtualizer\bin\Debug\dnlib.dll
+C:\Users\nicol\source\repos\MemeDevirtualizer\MemeDevirtualizer\obj\Debug\MemeDevirtualizer.csprojAssemblyReference.cache
+C:\Users\nicol\source\repos\MemeDevirtualizer\MemeDevirtualizer\obj\Debug\MemeDevirtualizer.csproj.CopyComplete
+C:\Users\nicol\source\repos\MemeDevirtualizer\MemeDevirtualizer\obj\Debug\MemeDevirtualizer.exe
+C:\Users\nicol\source\repos\MemeDevirtualizer\MemeDevirtualizer\obj\Debug\MemeDevirtualizer.pdb
