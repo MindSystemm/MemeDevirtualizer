@@ -57,7 +57,6 @@ string strr =@"                     __  __                     _____            
                 }
               
             }
-           // Stream res = asm.GetManifestResourceStream(" ");
             Decompress(str);
             foreach(MethodDef method in MethodIndex.Keys)
             {
@@ -116,6 +115,31 @@ string strr =@"                     __  __                     _____            
             {
                 method.Body.Instructions.Add(CreateInstr(instr, method));
             }
+            CorrectBranches(method);
+        }
+        public static void CorrectBranches(MethodDef method)
+        {
+            for(int i = 0; i < method.Body.Instructions.Count-1;i++)
+            {
+                if(method.Body.Instructions[i].OpCode == OpCodes.Ldstr && method.Body.Instructions[i].Operand.ToString().Contains("BrTrue|"))
+                {
+                    string operand = method.Body.Instructions[i].Operand.ToString();
+                    int GoodInstruction = Convert.ToInt32(operand.Split('|')[1]);
+                    method.Body.Instructions[i] = dnlib.DotNet.Emit.Instruction.Create(OpCodes.Brtrue, method.Body.Instructions[GoodInstruction]);
+                }
+                else if (method.Body.Instructions[i].OpCode == OpCodes.Ldstr && method.Body.Instructions[i].Operand.ToString().Contains("BrFalse|"))
+                {
+                    string operand = method.Body.Instructions[i].Operand.ToString();
+                    int GoodInstruction = Convert.ToInt32(operand.Split('|')[1]);
+                    method.Body.Instructions[i] = dnlib.DotNet.Emit.Instruction.Create(OpCodes.Brfalse, method.Body.Instructions[GoodInstruction]);
+                }
+                else if (method.Body.Instructions[i].OpCode == OpCodes.Ldstr && method.Body.Instructions[i].Operand.ToString().Contains("Br|"))
+                {
+                    string operand = method.Body.Instructions[i].Operand.ToString();
+                    int GoodInstruction = Convert.ToInt32(operand.Split('|')[1]);
+                    method.Body.Instructions[i] = dnlib.DotNet.Emit.Instruction.Create(OpCodes.Brfalse, method.Body.Instructions[GoodInstruction]);
+                }
+            }
         }
         internal static string GetReference(short index)
         {
@@ -163,12 +187,12 @@ string strr =@"                     __  __                     _____            
                     return dnlib.DotNet.Emit.Instruction.Create(OpCodes.Dup);
                 case OpCode.Jf:
                     Stack.Pop();
-                    return dnlib.DotNet.Emit.Instruction.Create(OpCodes.Brfalse, meth.Body.Instructions[(int)instr.Operand]);
+                    return dnlib.DotNet.Emit.Instruction.Create(OpCodes.Ldstr, string.Format("BrFalse|{0}",meth.Body.Instructions[(int)instr.Operand]));
                 case OpCode.Jmp:
-                    return dnlib.DotNet.Emit.Instruction.Create(OpCodes.Jmp, (byte)instr.Operand);
+                    return dnlib.DotNet.Emit.Instruction.Create(OpCodes.Ldstr, string.Format("Br|{0}", meth.Body.Instructions[(int)instr.Operand]));
                 case OpCode.Jt:
                     Stack.Pop();
-                    return dnlib.DotNet.Emit.Instruction.Create(OpCodes.Brtrue, meth.Body.Instructions[(int)instr.Operand]);
+                    return dnlib.DotNet.Emit.Instruction.Create(OpCodes.Ldstr, string.Format("BrTrue|{0}", meth.Body.Instructions[(int)instr.Operand]));
                 case OpCode.Int32:
                     Stack.Push((int)instr.Operand);
                     return dnlib.DotNet.Emit.Instruction.Create(OpCodes.Ldc_I4, (int)instr.Operand);
